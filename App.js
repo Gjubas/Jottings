@@ -3,11 +3,12 @@ import {
   View,
   Text,
   TextInput,
-  Button,
   FlatList,
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
+import { Button, Icon } from "react-native-elements";
+
 import * as SQLite from "expo-sqlite";
 
 const db = SQLite.openDatabase("shoppingList.db");
@@ -89,22 +90,42 @@ export default function App() {
           value={amount}
           onChangeText={(text) => setAmount(text)}
         />
-        <Button title="Save" onPress={addItem} />
+        <Button
+          title="Save"
+          buttonStyle={styles.saveButton}
+          icon={
+            <Icon
+              name="save"
+              type="font-awesome"
+              color="white"
+              iconStyle={styles.iconStyle}
+            />
+          }
+          onPress={addItem}
+        />
       </View>
 
-      <FlatList
-        data={shoppingList}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.listItems}>
-            <Text style={styles.listItem}>{item.name}</Text>
-            <Text style={styles.listItem}>{item.amount}</Text>
-            <TouchableOpacity onPress={() => removeItem(item.id)}>
-              <Text style={styles.deleteButton}>Bought</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      />
+      <View style={styles.listContainer}>
+        <FlatList
+          data={shoppingList}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.listItems}>
+              <View>
+                <Text>{item.name}</Text>
+                <Text style={styles.listItemAmount}>{item.amount}</Text>
+              </View>
+              <TouchableOpacity>
+                <Button
+                  onPress={() => removeItem(item.id)}
+                  icon={<Icon name="trash" type="font-awesome" color="red" />}
+                  type="clear"
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+        />
+      </View>
     </View>
   );
 }
@@ -112,8 +133,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: "#fff",
+    padding: 10,
+    backgroundColor: "#F8F8F8",
     alignItems: "center",
   },
   heading: {
@@ -122,6 +143,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
+    backgroundColor: "#3EB489",
+    color: "white",
+    padding: 10,
   },
   inputContainer: {
     width: "75%",
@@ -135,16 +159,31 @@ const styles = StyleSheet.create({
   },
   listItems: {
     flexDirection: "row",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
     padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "lightgray",
   },
   listItem: {
     marginLeft: 5,
     marginRight: 5,
   },
+  listItemAmount: {
+    color: "gray",
+  },
   deleteButton: {
     color: "red",
     marginLeft: 10,
+  },
+  saveButton: {
+    backgroundColor: "#3EB489",
+    flexDirection: "row-reverse",
+  },
+  iconStyle: {
+    marginLeft: 10,
+  },
+  listContainer: {
+    width: "100%",
   },
 });
